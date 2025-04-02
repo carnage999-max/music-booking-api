@@ -4,22 +4,6 @@ Designed to streamline the process of finding, booking and managing live perform
 
 ---
 
-## **Table of Contents**
-
-1. [Project Overview](#project-overview)
-2. [Tech Stack](#tech-stack)
-3. [Installation & Setup](#installation--setup)
-4. [Authentication](#authentication)
-5. [API Endpoints](#api-endpoints)
-   - [Artists](#artists)
-   - [Organizers](#organizers)
-   - [Booking Requests](#booking-requests)
-   - [Events](#events)
-6. [Sample API Responses](#sample-api-responses)
-7. [Running Tests](#running-tests)
-
----
-
 ## **Project Overview**
 
 The Event Booking API allows **organizers** to book **artists** for events.
@@ -78,6 +62,16 @@ python manage.py runserver
 ## **Authentication**
 
 The API uses **JWT authentication**. To get a token, log in with your credentials:
+
+---
+
+## **Database URL**
+
+[URL](https://console.neon.tech/app/projects/round-queen-71993030?branchId=br-wispy-paper-a5duk50j)
+
+## **Database Schema**
+
+![Database Schema](db_schema.png)
 
 ### **Login**
 
@@ -178,7 +172,7 @@ Authorization: Bearer jwt-access-token
 ```json
 {
   "company_name": "Top Events",
-  "description": "We manage big concerts"
+  "description": "We manage big concerts",
   "social_links": {"href": "www.xyz.com", "x": "www.x.com"},
   "website": "http://www.xyz.com",
 }
@@ -314,20 +308,10 @@ Authorization: Bearer jwt-access-token
 
 ---
 
-## **Running Tests**
-
-To ensure everything works correctly, run:
-
-```sh
-python manage.py test
-```
-
----
-
 ## **Conclusion**
 
 This API allows **organizers to book artists, artists to manage their bookings, and ensures role-based authentication**.
 
-- **Next steps:** 
+- **Next steps:**
    Consider adding notifications, payments, or reviews. 🚀
    Consider an application process for registering artists.
