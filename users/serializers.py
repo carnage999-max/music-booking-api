@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField
-from .models import CustomUser
+from .models import ArtistProfile, CustomUser, OrganizerProfile
 
 
 class LoginUserSerializer(Serializer):
@@ -13,7 +13,18 @@ class RegisterUserSerializer(ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
         
     def create(self, validated_data):
-        password = validated_data.pop('password')
         user = CustomUser.objects.create_user(**validated_data)
-        user.set_password(password)
+        user.save()
         return user
+    
+class ArtistSerializer(ModelSerializer):
+    class Meta:
+        model = ArtistProfile
+        fields = "__all__"
+        read_only_fields = ['user']
+        
+class OrganizerSerializer(ModelSerializer):
+    class Meta:
+        model = OrganizerProfile
+        fields = "__all__"
+        read_only_fields = ['user']

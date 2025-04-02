@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 USERTYPES = (
         ('artist', 'Artist'),
-        ('organizers', 'Organizers'),
+        ('organizer', 'Organizer'),
         ('admin', 'Admin'),
     )
 
@@ -58,9 +58,13 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
     
+    def __str__(self):
+        return self.username
+    
     
 class ArtistProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='artist_profile', verbose_name=_("User"))
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='artist_profile', verbose_name=_("Artist"))
+    stage_name = models.CharField(_("Stage name"), max_length=255)
     genre = models.CharField(max_length=50, verbose_name=_("Genre"))
     availability = models.BooleanField(default=True, verbose_name=_("Availability"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website URL"))
@@ -72,7 +76,11 @@ class ArtistProfile(models.Model):
     
 class OrganizerProfile(models.Model):
     user = models.OneToOneField("CustomUser", verbose_name=_("Organizer"), on_delete=models.CASCADE, related_name="organizer_profile")
-        
-class Event(models.Model):
-    pass
-
+    company_name = models.CharField(_("Company name"), max_length=255)
+    description = models.TextField(_("Description"))
+    website = models.URLField(blank=True, null=True, verbose_name=_("Website URL"))
+    social_links = models.JSONField(blank=True, null=True, verbose_name=_("Social Links"))
+    bio = models.TextField(blank=True, null=True, verbose_name=_("Bio")) 
+    
+    def __str__(self):
+        return self.user

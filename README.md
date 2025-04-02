@@ -1,126 +1,333 @@
-# Music Booking API
+## Music Booking API
 
-## Overview
+Designed to streamline the process of finding, booking and managing live performances, gigs and events for musicians, venues and promoters.
 
-This is a RESTful API for a music booking platform that facilitates the process of finding, booking, and managing live music performances, gigs, and events. The platform connects **artists**, **event organizers**, and **venues** by enabling them to create profiles, list events, and handle booking transactions.
+---
 
-## Features
+## **Table of Contents**
 
-- **User Authentication** (Register, Login, JWT-based authentication)
-- **Artist Profiles** (Showcase talent, genre, and availability)
-- **Event Listings** (Create, view, and manage events)
-- **Booking System** (Artists can accept/reject event bookings)
-- **Payment Processing** (Secure transactions for bookings)
-- **API Documentation** (Swagger and Postman collection for testing)
+1. [Project Overview](#project-overview)
+2. [Tech Stack](#tech-stack)
+3. [Installation & Setup](#installation--setup)
+4. [Authentication](#authentication)
+5. [API Endpoints](#api-endpoints)
+   - [Artists](#artists)
+   - [Organizers](#organizers)
+   - [Booking Requests](#booking-requests)
+   - [Events](#events)
+6. [Sample API Responses](#sample-api-responses)
+7. [Running Tests](#running-tests)
 
-## Tech Stack
+---
 
-- **Backend:** Django, Django REST Framework (DRF)
-- **Authentication:** JWT (Simple JWT)
-- **Database:** PostgreSQL (or MySQL)
-- **Deployment:** Docker, Cloud Hosting (optional)
+## **Project Overview**
 
-## Installation
+The Event Booking API allows **organizers** to book **artists** for events.
 
-1. **Clone the repository:**
+- **Artists** can manage bookings and accept/reject requests.
+- **Organizers** can book artists and view event details.
+- **Authentication** is handled via **JWT tokens**.
 
-   ```sh
-   git clone https://github.com/your-username/music-booking-api.git
-   cd music-booking-api
-   ```
+---
 
-2. **Install Pipenv and dependencies:**
+## **Tech Stack**
 
-   ```sh
-   pip install pipenv
-   pipenv install --dev
-   ```
+- **Python** (Django & Django REST Framework)
+- **Django REST Framework Simple JWT** (for authentication)
+- **PostgreSQL** (for database)
+- **Pipenv** (for virtual environment management)
 
-3. **Set up environment variables (.env file):**
+---
 
-   ```sh
-   SECRET_KEY=your_secret_key
-   DEBUG=True
-   DATABASE_URL=postgres://username:password@localhost:5432/music_booking_db
-   ```
+## **Installation & Setup**
 
-4. **Apply database migrations:**
-
-   ```sh
-   pipenv run python manage.py migrate
-   ```
-
-5. **Run the development server:**
-
-   ```sh
-   pipenv run python manage.py runserver
-   ```
-
-## API Endpoints
-
-### Authentication
-
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/auth/register/` | Register a new user |
-| POST | `/auth/login/` | User login (returns JWT tokens) |
-
-### Artists
-
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| GET | `/artists/` | List all artists |
-| POST | `/artists/` | Create an artist profile |
-| GET | `/artists/{id}/` | Get artist details |
-
-### Events
-
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| GET | `/events/` | List all events |
-| POST | `/events/` | Create an event |
-| GET | `/events/{id}/` | Get event details |
-
-### Bookings
-
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/bookings/` | Book an artist for an event |
-| GET | `/bookings/` | View all bookings |
-| PUT | `/bookings/{id}/status/` | Update booking status |
-
-### Payments
-
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/payments/` | Process payment for a booking |
-
-## Testing
-
-Use **Postman** or **cURL** to test the API. You can also run unit tests:
+### **1. Clone the repository**
 
 ```sh
-pipenv run python manage.py test
+git clone https://github.com/your-repo/music-booking-api.git
+cd music-booking-api
 ```
 
-## API Documentation
-
-- **Swagger UI:** [http://localhost:8000/swagger/](http://localhost:8000/swagger/)
-- **Postman Collection:** Available in the repository
-
-## Deployment (Optional)
-
-To deploy using **Docker**:
+### **2. Set up the virtual environment with Pipenv**
 
 ```sh
-docker build -t music-booking-api .
-docker run -p 8000:8000 music-booking-api
+pip install pipenv
+pipenv install
 ```
 
-## Contributors
+### **3. Apply database migrations**
 
-- **Your Name** – Developer
+```sh
+python manage.py migrate
+```
 
-## License
+### **4. Create a superuser (optional, for admin access)**
 
-This project is licensed under the MIT License.
+```sh
+python manage.py createsuperuser
+```
+
+### **5. Run the server**
+
+```sh
+python manage.py runserver
+```
+
+---
+
+## **Authentication**
+
+The API uses **JWT authentication**. To get a token, log in with your credentials:
+
+### **Login**
+
+#### **POST /auth/login/**
+
+```json
+{
+  "username": "testuser", //Can be either email or phone number
+  "password": "testpass"
+}
+```
+
+**Response:**
+
+```json
+{
+  "access": "jwt-access-token",
+  "refresh": "jwt-refresh-token"
+}
+```
+
+### **Register User**
+
+#### **POST /auth/register/**
+
+```json
+{
+  "email": "user-email",
+  "phone_number": "user-phone-number",
+  "password": "user-password",
+  "user_type": "artist"//Values can either be artist or organizer
+}
+```
+
+**Response**
+
+```json
+{
+  "username": null,
+  "email": "user@email.com",
+  "phone_number": "049594049499",
+  "user_type": "artist"
+}
+```
+
+To authenticate requests, include the token in the **Authorization** header:
+
+```sh
+Authorization: Bearer jwt-access-token
+```
+
+---
+
+## **API Endpoints**
+
+### **1. Artists**
+
+#### **Create an artist profile**
+
+✅ **Only authenticated users with the "artist" role can create an artist profile.**
+
+#### **POST /auth/artists/**
+
+```json
+{
+  "stage_name": "DJ Khaled",
+  "social_links": { "href": "www.xyz.com", "x": "www.x.com" },
+  "website": "http://www.xyz.com",
+  "bio": "Top music producer",
+  "genre": "Hip-hop"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "user": 2,
+  "stage_name": "DJ Khaled",
+  "bio": "Top music producer",
+  "genre": "Hip-hop",
+  "social_links": { "href": "www.xyz.com", "x": "www.x.com" },
+  "website": "http://www.xyz.com"
+}
+```
+
+---
+
+### **2. Organizers**
+
+#### **Create an organizer profile**
+
+✅ **Only authenticated users with the "organizer" role can create an organizer profile.**
+
+#### **POST /auth/organizers/**
+
+```json
+{
+  "company_name": "Top Events",
+  "description": "We manage big concerts"
+  "social_links": {"href": "www.xyz.com", "x": "www.x.com"},
+  "website": "http://www.xyz.com",
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "user": 3,
+  "company_name": "Top Events",
+  "description": "We manage big concerts"
+  "social_links": {"href": "www.xyz.com", "x": "www.x.com"},
+  "website": "http://www.xyz.com",
+}
+```
+
+---
+
+### **3. Booking Requests**
+
+#### **Create a booking request**
+
+✅ **Only organizers can request bookings.**  
+✅ **An artist cannot be double-booked for the same date.**
+
+#### **POST /api/bookings/**
+
+```json
+{
+  "artist": 1,
+  "event_name": "Summer Festival",
+  "event_date": "2025-06-20T18:00:00Z"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "artist": 1,
+  "event_name": "Summer Festival",
+  "event_date": "2025-06-20T18:00:00Z",
+  "status": "pending",
+  "created_at": "2025-04-02T12:00:00Z"
+}
+```
+
+#### **Accept or Decline a Booking (Artist Only)**
+
+✅ **Artists can approve or decline bookings.**
+
+#### **PATCH /bookings/{id}/**
+
+```json
+{
+  "status": "accepted"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "artist": 1,
+  "event_name": "Summer Festival",
+  "event_date": "2025-06-20T18:00:00Z",
+  "status": "accepted"
+}
+```
+
+---
+
+### **4. Events**
+
+#### **Retrieve confirmed events**
+
+✅ **Only confirmed bookings create an event.**
+
+#### **GET /api/events/**
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Summer Festival",
+    "date": "2025-06-20T18:00:00Z",
+    "artists": [1]
+  }
+]
+```
+
+---
+
+## **Sample API Responses**
+
+### **Invalid Booking Request (Artist Already Booked)**
+
+#### **POST /api/bookings/**
+
+```json
+{
+  "artist": 1,
+  "event_name": "Winter Fest",
+  "event_date": "2025-06-20T18:00:00Z"
+}
+```
+
+**Response (400 Bad Request):**
+
+```json
+{
+  "error": "Artist is already booked for this date."
+}
+```
+
+### **Unauthorized Access (No Token Provided)**
+
+#### **GET /auth/artists/**
+
+**Response (401 Unauthorized):**
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+## **Running Tests**
+
+To ensure everything works correctly, run:
+
+```sh
+python manage.py test
+```
+
+---
+
+## **Conclusion**
+
+This API allows **organizers to book artists, artists to manage their bookings, and ensures role-based authentication**.
+
+- **Next steps:** 
+   Consider adding notifications, payments, or reviews. 🚀
+   Consider an application process for registering artists.
