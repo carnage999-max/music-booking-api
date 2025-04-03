@@ -57,6 +57,8 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+### API Documentation is found at http://localhost:8000/api/swagger/
+
 ---
 
 ## **Authentication**
@@ -67,7 +69,11 @@ The API uses **JWT authentication**. To get a token, log in with your credential
 
 ## **Database URL**
 
-[URL](https://console.neon.tech/app/projects/round-queen-71993030?branchId=br-wispy-paper-a5duk50j)
+[DATABASE URL](https://console.neon.tech/app/projects/round-queen-71993030?branchId=br-wispy-paper-a5duk50j)
+
+## **API DOCUMENTATION**
+
+[API Documentation](http://localhost:8000/api/swagger/)
 
 ## **Database Schema**
 
